@@ -15,7 +15,7 @@ class ZabbixApi
       lastval
     end
 
-    # get an item id from search
+    # get an item id from hostid and key
     def get_item_id(hostid, key)
       id = ''
       result = @client.api_request(:method => "#{method_name}.get", :params => { :output => "extend", :hostids => hostid, :search => { :key_ => key } } )

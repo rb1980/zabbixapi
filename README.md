@@ -14,9 +14,9 @@ Simple and lightweight ruby module for work with zabbix api
 gem install zabbixapi
 ```
 
-## Get Start
+## Get Started
 
-### Connect
+### Connect to the server
 ```ruby
 require "zabbixapi"
 
@@ -34,22 +34,93 @@ zbx = ZabbixApi.connect(
   :http_user => 'bla-bla'
 )
 ```
+
+## Hosts
+
+### Create host (1.8)
+```ruby
+zbx.hosts.add(
+  :host => "hostname",
+  :usedns => 1,
+  :groups => [ :groupid => zbx.hostgroups.get_id(:name => "hostgroup") ]
+)
+#or use:
+zbx.hosts.create_or_update(
+  :host => host,
+  :usedns => 0,
+  :ip => "10.20.48.89",
+  :groups => [:groupid => zbx.hostgroups.get_id(:name => hostgroup)]
+)
+```
+### Create host (2.0 and later)
+```ruby
+zbx.hosts.create(
+  :host => host.fqdn,
+  :interfaces => [
+    {
+      :type => 1,
+      :main => 1,
+      :ip => '10.0.0.1',
+      :dns => 'server.example.org',
+      :port => 10050,
+      :useip => 0
+    }
+  ],
+  :groups => [ :groupid => zbx.hostgroups.get_id(:name => "hostgroup") ]
+)
+#or use:
+zbx.hosts.create_or_update(
+  :host => host.fqdn,
+  :interfaces => [
+    {
+      :type => 1,
+      :main => 1,
+      :ip => '10.0.0.1',
+      :dns => 'server.example.org',
+      :port => 10050,
+      :useip => 0
+    }
+  ],
+  :groups => [ :groupid => zbx.hostgroups.get_id(:name => "hostgroup") ]
+)
+```
+### Update host
+```ruby
+zbx.hosts.update(
+  :hostid => zbx.hosts.get_id(:host => "hostname"),
+  :status => 0
+)
+#You can check host:
+puts zbx.hosts.get_full_data(:host => "hostname")
+```
+### Delete host
+```ruby
+zbx.hosts.delete zbx.hosts.get_id(:host => "hostname")
+```
+
+## Hostgroups 
+
 ### Create Hostgroup
 ```ruby
 zbx.hostgroups.create(:name => "hostgroup")
 ```
+### Update Hostgroup
+# TODO: example
+### Delete Hostgroup
+# TODO: example
+### Get hostgroup id by name
+```ruby
+zbx.hostgroups.get_id(:name => group)
+```
 ### Get array of hostgroup member ids
 ```ruby
-get_ids_by_hostgroup(groupid)
+#by groupid
+zbx.hostgroups.get_ids_by_hostgroup(groupid)
+#or by name
+zbx.hostgroups.get_ids_by_hostgroup(zbx.hostgroups.get_id(:name => group))
 ```
 
-### Create Template
-```ruby
-zbx.templates.create(
-  :host => "template",
-  :groups => [:groupid => zbx.hostgroups.get_id(:name => "hostgroup")]
-)
-```
+## Applications
 
 ### Create Application
 ```ruby
@@ -58,6 +129,18 @@ zbx.applications.create(
   :hostid => zbx.templates.get_id(:host => "template")
 )
 ```
+### Update Application
+# TODO: example
+### Delete Application
+# TODO: example
+### Get Application id
+```ruby
+zbx.applications.get(:name => groupname, :hostid => id)
+#to be idempotent: (create application if not already exist)
+zbx.applications.get_or_create(:name => groupname, :hostid => id)
+```
+
+## Items
 
 ### Create Item
 ```ruby
@@ -76,7 +159,6 @@ zbx.items.create_or_update(
   :applications => [zbx.applications.get_id(:name => "application")]
 )
 ```
-
 ### Update Item
 ```ruby
 zbx.items.update(
@@ -86,81 +168,39 @@ zbx.items.update(
 #You can check item:
 puts zbx.items.get_full_data(:description => "item")
 ```
-
-### Get Item Id
+### Get Item Id by key
 ```ruby
 zbx.items.get_item_id(host_id,key)
-```
+# example:
 
-### Get Item by Name
+```
+### Get Item value by Parameter Name
 ```ruby
 zbx.items.get_item_value_byname(host_ids,key,parameter)
 ```
+### Delete Item
+# TODO: example
 
-### Create host (1.8)
+## Triggers
+
+### Create trigger
 ```ruby
-zbx.hosts.add(
-  :host => "hostname",
-  :usedns => 1,
-  :groups => [ :groupid => zbx.hostgroups.get_id(:name => "hostgroup") ]
-)
-#or use:
-zbx.hosts.create_or_update(
-  :host => host,
-  :usedns => 0,
-  :ip => "10.20.48.89",
-  :groups => [:groupid => zbx.hostgroups.get_id(:name => hostgroup)]
-)
-```
+zbx.triggers.create(
+  :description => "trigger",
+  :expression => "{template:proc.num[aaa].last(0)}<1",
+  :comments => "Bla-bla is faulty (disaster)",
+  :priority => 5,
+  :status     => 0,
+  :templateid => 0,
+  :type => 0
+ )
+````
+### Update trigger
+# TODO: add example
+### Delete trigger
+# TODO: add example
 
-### Create host (2.0 and later)
-```ruby
-zbx.hosts.create(
-  :host => host.fqdn,
-  :interfaces => [
-    {
-      :type => 1,
-      :main => 1,
-      :ip => '10.0.0.1',
-      :dns => 'server.example.org',
-      :port => 10050,
-      :useip => 0
-    }
-  ],
-  :groups => [ :groupid => zbx.hostgroups.get_id(:name => "hostgroup") ]
-)
-
-#or use:
-zbx.hosts.create_or_update(
-  :host => host.fqdn,
-  :interfaces => [
-    {
-      :type => 1,
-      :main => 1,
-      :ip => '10.0.0.1',
-      :dns => 'server.example.org',
-      :port => 10050,
-      :useip => 0
-    }
-  ],
-  :groups => [ :groupid => zbx.hostgroups.get_id(:name => "hostgroup") ]
-)
-```
-
-### Update host
-```ruby
-zbx.hosts.update(
-  :hostid => zbx.hosts.get_id(:host => "hostname"),
-  :status => 0
-)
-#You can check host:
-puts zbx.hosts.get_full_data(:host => "hostname")
-```
-
-
-```ruby
-zbx.hosts.delete zbx.hosts.get_id(:host => "hostname")
-```
+## Graphs
 
 ### Create graph
 ```ruby
@@ -201,18 +241,28 @@ zbx.graphs.create_or_update(
   :height => "200"
 )
 ```
-### Get ids by host ###
+### Get graph ids by host ###
 ```ruby
 zbx.graphs.get_ids_by_host(:host => "hostname")
 #You can filter graph name:
 zbx.graphs.get_ids_by_host(:host => "hostname", filter => "CPU")
 ```
-
 ### Delete graph
 ```ruby
 zbx.graphs.delete(zbx.graphs.get_id(:name => "graph"))
 ```
 
+## Templates
+
+### Create Template
+```ruby
+zbx.templates.create(
+  :host => "template",
+  :groups => [:groupid => zbx.hostgroups.get_id(:name => "hostgroup")]
+)
+```
+### Update Template
+# TODO: example
 ### Get all templates linked with host
 ```ruby
 zbx.templates.get_ids_by_host( :hostids => [zbx.hosts.get_id(:host => "hostname")] )
@@ -222,7 +272,6 @@ zbx.templates.get_ids_by_host( :hostids => [zbx.hosts.get_id(:host => "hostname"
 #  "Templatename" => "1021"
 #}
 ```
-
 ### Mass (Un)Link host with templates
 ```ruby
 zbx.templates.mass_add(
@@ -234,19 +283,10 @@ zbx.templates.mass_remove(
   :templates_id => [111, 214]
 )
 ```
+### Delete template
+# TODO: add example
 
-### Create trigger
-```ruby
-zbx.triggers.create(
-  :description => "trigger",
-  :expression => "{template:proc.num[aaa].last(0)}<1",
-  :comments => "Bla-bla is faulty (disaster)",
-  :priority => 5,
-  :status     => 0,
-  :templateid => 0,
-  :type => 0
- )
-````
+## Users/Usergroups/Media
 
 ### Create user
 ```ruby
@@ -257,40 +297,14 @@ zbx.users.create(
   :passwd => "password"
 )
 ```
-
 ### Update user
 ```ruby
 zbx.users.update(:userid => zbx.users.get_id(:name => "user"), :name => "user2")
 ```
-
-### Delete graph
+### Delete user
 ```ruby
-zbx.graphs.delete(zbx.graphs.get_id(:name => "graph"))
+zbx.users.delete(:userid => zbx.users.get_id(:name => "user"), :name => "user2")
 ```
-
-### Create screen for host  ###
-```ruby
-zbx.screens.get_or_create_for_host(
-  :screen_name => "screen_name",
-  :graphids => zbx.graphs.get_ids_by_host(:host => "hostname")
-)
-```
-
-### Delete screen ###
-```ruby
-zbx.screens.delete(
-  :screen_id => 1, # or screen_id => [1, 2]
-)
-```
-
-or
-
-```ruby
-zbx.screens.delete(
-  :screen_name => "foo screen", # or screen_name => ["foo screen", "bar screen"]
-)
-````
-
 ### Create UserGroup, add user and set permission ###
 ```ruby
 zbx.usergroups.get_or_create(:name => "Some user group")
@@ -305,7 +319,6 @@ zbx.usergroups.set_perm(
    :permission => 3 # 2- read (by default) and 3 - write and read
 )
 ```
-
 ### Create MediaType and add it to user ###
 ```ruby
 zbx.mediatypes.create_or_update(
@@ -327,6 +340,32 @@ zbx.users.add_medias(
   ]
 )
 ```
+
+## Screens
+
+### Create screen for host
+```ruby
+zbx.screens.get_or_create_for_host(
+  :screen_name => "screen_name",
+  :graphids => zbx.graphs.get_ids_by_host(:host => "hostname")
+)
+```
+### Update Screen
+# TODO: example
+### Delete screen
+```ruby
+zbx.screens.delete(
+  :screen_id => 1, # or screen_id => [1, 2]
+)
+```
+or
+```ruby
+zbx.screens.delete(
+  :screen_name => "foo screen", # or screen_name => ["foo screen", "bar screen"]
+)
+````
+
+## Zabbix Server Configuration
 
 ### Create proxy (2.0 and later)
 #### Active proxy
@@ -367,6 +406,7 @@ zbx.query(
   :params => {}
 )
 ```
+#TODO: add some more examples here
 
 ## Dependencies
 
