@@ -95,7 +95,7 @@ puts zbx.hosts.get_full_data(:host => "hostname")
 ```
 ### Delete host
 ```ruby
-zbx.hosts.delete zbx.hosts.get_id(:host => "hostname")
+zbx.hosts.delete(zbx.hosts.get_id(:host => "hostname"))
 ```
 
 ## Hostgroups 
