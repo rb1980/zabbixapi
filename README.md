@@ -83,6 +83,16 @@ zbx.items.update(
 puts zbx.items.get_full_data(:description => "item")
 ```
 
+### Get Item Id
+```ruby
+zbx.items.get_item_id(host_id,key)
+```
+
+### Get Item by Name
+```ruby
+zbx.items.get_item_value_byname(host_ids,key,parameter)
+```
+
 ### Create host (1.8)
 ```ruby
 zbx.hosts.add(

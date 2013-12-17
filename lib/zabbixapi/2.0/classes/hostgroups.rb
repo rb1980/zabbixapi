@@ -1,6 +1,19 @@
 class ZabbixApi
   class HostGroups < Basic
 
+    # returns an array of host ids that are a member of hostgroup
+		def get_ids_by_hostgroup(data)
+      ids = []
+      result = @client.api_request(:method => "#{method_name}.get", :params => {:groupids => data[:groupid], :selectHosts => "refer"})
+      result.each do |hostgrp|
+				hostgrp['hosts'].each do |host|
+      		id  = host['hostid']
+      		ids.push(id)
+				end
+      end
+      ids
+    end
+
     def array_flag
       true
     end

@@ -1,6 +1,49 @@
 class ZabbixApi
   class Items < Basic
 
+    # gets the last value of a particular item - pass in host id and key
+    def get_item_lastvalue(hostid, key)
+      lastval = ''
+      result = @client.api_request(:method => "#{method_name}.get", :params => { :output => "extend", :hostids => hostid, :search => { :key_ => key } } )
+      result.each do |item|
+        item.each do |name,val|
+          if name == 'lastvalue'
+            lastval = val
+          end
+        end
+      end
+      lastval
+    end
+
+    # get an item id from search
+    def get_item_id(hostid, key)
+      id = ''
+      result = @client.api_request(:method => "#{method_name}.get", :params => { :output => "extend", :hostids => hostid, :search => { :key_ => key } } )
+      result.each do |item|
+        item.each do |name,val|
+          if name == 'itemid'
+            id = val
+          end
+        end
+      end
+      id
+    end
+
+    # get the value of an item by parameter name
+    def get_item_value_byname(hostid, key, param)
+      vals = ''
+      result = @client.api_request(:method => "#{method_name}.get", :params => { :output => "extend", :hostids => hostid, :search => { :key_ => key } } )
+      result.each do |item|
+        item.each do |name,val|
+          if name == param
+            #vals.push(val)
+            vals = val
+          end
+        end
+      end
+      vals
+    end
+
     def array_flag
       true
     end
