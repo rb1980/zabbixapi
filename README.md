@@ -105,9 +105,9 @@ zbx.hosts.delete zbx.hosts.get_id(:host => "hostname")
 zbx.hostgroups.create(:name => "hostgroup")
 ```
 ### Update Hostgroup
-# TODO: example
+#### TODO: example
 ### Delete Hostgroup
-# TODO: example
+#### TODO: example
 ### Get hostgroup id by name
 ```ruby
 zbx.hostgroups.get_id(:name => group)
@@ -130,9 +130,9 @@ zbx.applications.create(
 )
 ```
 ### Update Application
-# TODO: example
+#### TODO: example
 ### Delete Application
-# TODO: example
+#### TODO: example
 ### Get Application id
 ```ruby
 zbx.applications.get(:name => groupname, :hostid => id)
@@ -179,7 +179,7 @@ zbx.items.get_item_id(host_id,key)
 zbx.items.get_item_value_byname(host_ids,key,parameter)
 ```
 ### Delete Item
-# TODO: example
+#### TODO: example
 
 ## Triggers
 
@@ -196,9 +196,9 @@ zbx.triggers.create(
  )
 ````
 ### Update trigger
-# TODO: add example
+#### TODO: add example
 ### Delete trigger
-# TODO: add example
+#### TODO: add example
 
 ## Graphs
 
@@ -262,7 +262,7 @@ zbx.templates.create(
 )
 ```
 ### Update Template
-# TODO: example
+#### TODO: example
 ### Get all templates linked with host
 ```ruby
 zbx.templates.get_ids_by_host( :hostids => [zbx.hosts.get_id(:host => "hostname")] )
@@ -284,7 +284,7 @@ zbx.templates.mass_remove(
 )
 ```
 ### Delete template
-# TODO: add example
+#### TODO: add example
 
 ## Users/Usergroups/Media
 
@@ -351,7 +351,7 @@ zbx.screens.get_or_create_for_host(
 )
 ```
 ### Update Screen
-# TODO: example
+#### TODO: example
 ### Delete screen
 ```ruby
 zbx.screens.delete(
