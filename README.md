@@ -9,12 +9,14 @@ Simple and lightweight ruby module for work with zabbix api
 * 1.8.9 (api version 1.3)
 * 2.0.x (api version 1.4 -> 2.0.6) [unstable]
 
+---
 ## Installation
 ```
 gem install zabbixapi
 ```
 
-## Get Started
+---
+## Getting Started
 
 ### Connect to the server
 ```ruby
