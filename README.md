@@ -38,6 +38,10 @@ zbx = ZabbixApi.connect(
 ```ruby
 zbx.hostgroups.create(:name => "hostgroup")
 ```
+### Get array of hostgroup member ids
+```ruby
+get_ids_by_hostgroup(groupid)
+```
 
 ### Create Template
 ```ruby
