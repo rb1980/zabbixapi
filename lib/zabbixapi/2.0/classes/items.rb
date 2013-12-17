@@ -36,7 +36,6 @@ class ZabbixApi
       result.each do |item|
         item.each do |name,val|
           if name == param
-            #vals.push(val)
             vals = val
           end
         end
